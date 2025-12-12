@@ -1,0 +1,24 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - qrcode_network
+    restart: unless-stopped
+  backend:
+    build:
+      context: ./backend
+      dockerfile: dockerfile
+    expose:
+      - "3000"
+    volumes:
+      - ./backend/data.json:/app/data.json
+    networks:
+      - qrcode_network
+    restart: unless-stopped
+
+networks:
+  qrcode_network:
